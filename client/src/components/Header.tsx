@@ -1,9 +1,11 @@
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import img from "../assets/1.png";
+import { useNavigate } from "react-router";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="sticky top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
@@ -41,10 +43,16 @@ function Header() {
             </a>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="hover:text-white box-border hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition">
+            <button
+              onClick={() => navigate("/SignIn")}
+              className="hover:text-white box-border hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
+            >
               Login
             </button>
-            <button className="px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all">
+            <button
+              onClick={() => navigate("/registre")}
+              className="px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
+            >
               Get Started
             </button>
             <button
