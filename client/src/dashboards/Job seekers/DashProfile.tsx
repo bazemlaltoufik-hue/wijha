@@ -201,7 +201,7 @@ const DashProfile = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:3000/api/auth/${currentUser?.userId}`,
+          `${import.meta.env.VITE_API_URL}/api/auth/${currentUser?.userId}`,
         );
         const data = await res.json();
         if (res.ok) {
@@ -404,7 +404,7 @@ const DashProfile = () => {
     setLoadingEdit(true);
     try {
       const res = await fetch(
-        `http://localhost:3000/api/auth/${currentUser.userId}`,
+        `${import.meta.env.VITE_API_URL}/api/auth/${currentUser.userId}`,
         {
           method: "PUT",
           credentials: "include",

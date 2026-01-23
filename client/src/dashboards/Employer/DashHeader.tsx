@@ -42,10 +42,13 @@ export default function DashHeader({
 
   const handleLogOut = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
       if (res.ok) {
         dispatch(signout());
         navigate("/SignIn");

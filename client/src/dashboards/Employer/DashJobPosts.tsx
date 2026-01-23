@@ -75,7 +75,7 @@ export default function DashJobPost() {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:3000/api/jobPost/getAllJobs?createdBy=${
+        `${import.meta.env.VITE_API_URL}/api/jobPost/getAllJobs?createdBy=${
           currentUser.userId
         }&page=${page}&limit=${limit} ${
           data?.search && `&search=${data.search}`
@@ -135,7 +135,7 @@ export default function DashJobPost() {
   const handleChangeState = async (jobId: string, newState: string) => {
     setLoadingState(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/jobPost/${jobId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/jobPost/${jobId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

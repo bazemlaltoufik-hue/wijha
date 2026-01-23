@@ -92,17 +92,20 @@ const CreateJobPost = () => {
     setLoading(true);
     console.log({ ...data, state: state === "draft" && "draft" });
     try {
-      const res = await fetch("http://localhost:3000/api/jobPost/create", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/jobPost/create`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...data,
+            state: state,
+          }),
         },
-        body: JSON.stringify({
-          ...data,
-          state: state,
-        }),
-      });
+      );
       const info = await res.json();
       if (res.ok) {
         setLoading(false);

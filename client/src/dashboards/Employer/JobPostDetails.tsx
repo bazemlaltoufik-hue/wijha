@@ -80,7 +80,7 @@ export default function JobPostManager() {
     const getJobPost = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/jobpost/${tabFromUrl}`
+          `${import.meta.env.VITE_API_URL}/api/jobpost/${tabFromUrl}`,
         );
         const data = await res.json();
         if (res.ok) {
@@ -151,14 +151,14 @@ export default function JobPostManager() {
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/jobpost/${tabFromUrl}`,
+        `${import.meta.env.VITE_API_URL}/api/jobpost/${tabFromUrl}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
       const result = await res.json();
       if (res.ok) {

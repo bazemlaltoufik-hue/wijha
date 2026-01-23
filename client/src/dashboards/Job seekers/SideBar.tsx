@@ -46,10 +46,13 @@ export default function SideBar({
   const handleLogOut = async () => {
     console.log("Logging out...");
     try {
-      const res = await fetch("http://localhost:3000/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
       if (res.ok) {
         dispatch(signout());
         navigate("/SignIn");

@@ -107,7 +107,7 @@ export default function JobOfferDetails() {
     const getJobData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:3000/api/jobPost/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/jobPost/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -131,7 +131,7 @@ export default function JobOfferDetails() {
     const getApplication = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/application/get?jobSeekerId=${currentUser.userId}&jobOfferId=${id}`,
+          `${import.meta.env.VITE_API_URL}/api/application/get?jobSeekerId=${currentUser.userId}&jobOfferId=${id}`,
           {
             method: "GET",
             headers: {
@@ -161,7 +161,7 @@ export default function JobOfferDetails() {
   const handleCreateApplication = async () => {
     setApplyLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/application/create", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/application/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -193,7 +193,7 @@ export default function JobOfferDetails() {
     dispatch(saveJob(jobId));
     try {
       const res = await fetch(
-        `http://localhost:3000/api/auth/${currentUser.userId}`,
+        `${import.meta.env.VITE_API_URL}/api/auth/${currentUser.userId}`,
         {
           method: "PUT",
           headers: {
@@ -220,7 +220,7 @@ export default function JobOfferDetails() {
     dispatch(removeSavedJob(jobId));
     try {
       const res = await fetch(
-        `http://localhost:3000/api/auth/${currentUser.userId}`,
+        `${import.meta.env.VITE_API_URL}/api/auth/${currentUser.userId}`,
         {
           method: "PUT",
           headers: {

@@ -46,7 +46,7 @@ export default function DashApplication() {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:3000/api/application/getall?jobSeekerId=${currentUser.userId}`,
+          `${import.meta.env.VITE_API_URL}/api/application/getall?jobSeekerId=${currentUser.userId}`,
           {
             method: "GET",
             headers: {

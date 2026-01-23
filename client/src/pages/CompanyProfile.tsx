@@ -36,7 +36,9 @@ export default function CompanyProfile() {
     const getData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:3000/api/auth/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/${id}`,
+        );
 
         if (res.ok) {
           const data = await res.json();

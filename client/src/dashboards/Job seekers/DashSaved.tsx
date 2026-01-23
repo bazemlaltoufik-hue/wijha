@@ -28,7 +28,7 @@ const DashSaved = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          "http://localhost:3000/api/jobPost/getJobPostsByIds",
+          `${import.meta.env.VITE_API_URL}/api/jobPost/getJobPostsByIds`,
           {
             method: "POST",
             headers: {
@@ -61,7 +61,7 @@ const DashSaved = () => {
     dispatch(saveJob(jobId));
     try {
       const res = await fetch(
-        `http://localhost:3000/api/auth/${currentUser.userId}`,
+        `${import.meta.env.VITE_API_URL}/api/auth/${currentUser.userId}`,
         {
           method: "PUT",
           headers: {
@@ -88,7 +88,7 @@ const DashSaved = () => {
     dispatch(removeSavedJob(jobId));
     try {
       const res = await fetch(
-        `http://localhost:3000/api/auth/${currentUser.userId}`,
+        `${import.meta.env.VITE_API_URL}/api/auth/${currentUser.userId}`,
         {
           method: "PUT",
           headers: {

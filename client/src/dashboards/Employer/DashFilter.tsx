@@ -71,7 +71,7 @@ function DashFilter({
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:3000/api/jobPost/getAllJobs?createdBy=${createdBy}${
+        `${import.meta.env.VITE_API_URL}/api/jobPost/getAllJobs?createdBy=${createdBy}${
           data.search && `&search=${data.search}`
         }${data.location && `&location=${data.location}`}${
           data.jobType && `&jobType=${data.jobType}`
@@ -86,7 +86,7 @@ function DashFilter({
             "Content-Type": "application/json",
           },
           credentials: "include",
-        }
+        },
       );
 
       const result = await res.json();

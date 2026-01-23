@@ -21,7 +21,7 @@ const App = () => {
     const checkAuth = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/auth/me/${currentUser?.userId}`,
+          `${import.meta.env.VITE_API_URL}/api/auth/me/${currentUser?.userId}`,
         );
         if (!res.ok) {
           console.error("Failed to fetch user data");
@@ -35,10 +35,13 @@ const App = () => {
 
     const handleLogOut = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/auth/logout", {
-          method: "POST",
-          credentials: "include",
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/logout`,
+          {
+            method: "POST",
+            credentials: "include",
+          },
+        );
         if (!res.ok) {
           console.error("Logout failed");
         }
