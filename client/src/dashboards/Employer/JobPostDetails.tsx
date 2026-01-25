@@ -54,6 +54,8 @@ import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
 
 export default function JobPostManager() {
+  const [applicants, setApplicants] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
   const [state, setState] = useState("");
@@ -114,6 +116,34 @@ export default function JobPostManager() {
       });
     }
   }, [jobPost]);
+
+  useEffect(() => {
+    const getApplicants = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/application/getall?jobOfferId=${jobPost._id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setApplicants(data);
+        } else {
+          console.error("Failed to fetch applicants:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching applicants:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getApplicants();
+  });
 
   const FormSchema = z.object({
     title: z.string().min(1, "Job title is required."),
@@ -883,94 +913,102 @@ Requirements (Qualifications & Skills)
         {/* Applicants Tab */}
         {activeTab === "applicants" && (
           <div className="flex flex-col gap-4 mt-6">
-            <div
-              key="1"
-              className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-4">
-                {/* Avatar */}
-                <img
-                  src="https://i.pravatar.cc/150?img=1"
-                  alt="profileImage"
-                  className="w-16 h-16 rounded-2xl border-4 border-gray-200 self-start"
-                />
+            {applicants.map((applicant) => (
+              <div
+                key={applicant.id}
+                className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-4">
+                  {/* Avatar */}
+                  <img
+                    src={applicant.jobSeekerId.profileImage}
+                    alt="profileImage"
+                    className="w-16 h-16 rounded-2xl border-4 border-gray-200 self-start"
+                  />
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">
-                      Toufik Bazemlal
-                    </h3>
-                    <p className="text-gray-600 font-medium mb-3">
-                      Frontend Developer
-                    </p>
-                  </div>
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-1">
+                        {applicant.jobSeekerId.firstName}{" "}
+                        {applicant.jobSeekerId.lastName}
+                      </h3>
+                      <p className="text-gray-600 font-medium mb-3">
+                        {applicant.jobSeekerId.professionalTitle}
+                      </p>
+                    </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
-                        <Mail className="w-4 h-4 text-blue-600" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
+                          <Mail className="w-4 h-4 text-blue-600" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs text-gray-500 font-medium">
+                            Email
+                          </p>
+                          <p className="text-sm text-gray-900 truncate">
+                            {applicant.jobSeekerId.email}
+                          </p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-xs text-gray-500 font-medium">
-                          Email
-                        </p>
-                        <p className="text-sm text-gray-900 truncate">
-                          ToufikBazem@gmail.com
-                        </p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
+                          <Phone className="w-4 h-4 text-green-600" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs text-gray-500 font-medium">
+                            {applicant.jobSeekerId.firstName}
+                          </p>
+                          <p className="text-sm text-gray-900">0668868241</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center">
+                          <MapPin className="w-4 h-4 text-purple-600" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs text-gray-500 font-medium">
+                            Location
+                          </p>
+                          <p className="text-sm text-gray-900 truncate">
+                            {applicant.jobSeekerId.location}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 bg-orange-50 rounded-lg flex items-center justify-center">
+                          <Award className="w-4 h-4 text-orange-600" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs text-gray-500 font-medium">
+                            Experience
+                          </p>
+                          <p className="text-sm text-gray-900">
+                            {applicant.jobSeekerId.experienceYears} years
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
-                        <Phone className="w-4 h-4 text-green-600" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs text-gray-500 font-medium">
-                          Phone
-                        </p>
-                        <p className="text-sm text-gray-900">0668868241</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center">
-                        <MapPin className="w-4 h-4 text-purple-600" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs text-gray-500 font-medium">
-                          Location
-                        </p>
-                        <p className="text-sm text-gray-900 truncate">
-                          Mohamadia, Alger
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 bg-orange-50 rounded-lg flex items-center justify-center">
-                        <Award className="w-4 h-4 text-orange-600" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs text-gray-500 font-medium">
-                          Experience
-                        </p>
-                        <p className="text-sm text-gray-900">4 years</p>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-500">
-                        Applied 2 days ago
-                      </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100">
+                        <Clock className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-500">
+                          Applied 2 days ago
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => navigate("#")}
+                        className="px-5 py-2  text-white rounded-lg font-medium bg-[#008CBA] hover:bg-[#00668C] cursor-pointer transition-colors"
+                      >
+                        View Profile
+                      </button>
                     </div>
-                    <button className="px-5 py-2  text-white rounded-lg font-medium bg-[#008CBA] hover:bg-[#00668C] cursor-pointer transition-colors">
-                      View Profile
-                    </button>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         )}
       </div>

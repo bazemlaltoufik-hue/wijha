@@ -121,6 +121,9 @@ const jobSeekerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  professionalTitle: {
+    type: String,
+  },
   gender: {
     type: String,
     enum: ["Male", "Female"],
@@ -150,6 +153,10 @@ const jobSeekerSchema = new mongoose.Schema({
         description: String,
       },
     ],
+  },
+  experienceYears: {
+    type: Number,
+    default: 0,
   },
   education: {
     type: [

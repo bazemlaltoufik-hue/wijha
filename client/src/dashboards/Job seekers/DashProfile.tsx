@@ -92,6 +92,7 @@ const DashProfile = () => {
   const [profile, setProfile] = useState<{
     firstName?: string;
     lastName?: string;
+    professionalTitle?: string;
     email?: string;
     phoneNumber?: string;
     address?: string;
@@ -107,6 +108,7 @@ const DashProfile = () => {
       to: string;
       description: string;
     }>;
+    experienceYears?: number;
     education?: Array<{
       title: string;
       institution: string;
@@ -131,6 +133,7 @@ const DashProfile = () => {
   const FormSchema = z.object({
     firstName: z.string().min(1, "First name is required."),
     lastName: z.string().min(1, "Last name is required."),
+    professionalTitle: z.string().optional(),
     linkedin: z.string().optional(),
     github: z.string().optional(),
     portfolio: z.string().optional(),
@@ -152,6 +155,7 @@ const DashProfile = () => {
         }),
       )
       .optional(),
+    experienceYears: z.number().optional(),
     education: z
       .array(
         z.object({
@@ -180,6 +184,9 @@ const DashProfile = () => {
     defaultValues: {
       firstName: profile?.firstName ? profile?.firstName : "",
       lastName: profile?.lastName ? profile?.lastName : "",
+      professionalTitle: profile?.professionalTitle
+        ? profile?.professionalTitle
+        : "",
       email: profile?.email ? profile?.email : "",
       phoneNumber: profile?.phoneNumber ? profile?.phoneNumber : "",
       address: profile?.address ? profile?.address : "",
@@ -188,6 +195,7 @@ const DashProfile = () => {
       github: profile?.github ? profile?.github : "",
       portfolio: profile?.portfolio ? profile?.portfolio : "",
       experience: profile?.experience ? profile?.experience : [],
+      experienceYears: profile?.experienceYears ? profile?.experienceYears : 0,
       education: profile?.education ? profile?.education : [],
       languages: profile?.languages ? profile?.languages : [],
       skills: profile?.skills ? profile?.skills : [],
@@ -223,6 +231,7 @@ const DashProfile = () => {
       form.reset({
         firstName: profile.firstName,
         lastName: profile.lastName,
+        professionalTitle: profile.professionalTitle || "",
         email: profile.email,
         phoneNumber: profile.phoneNumber,
         address: profile.address,
@@ -400,7 +409,34 @@ const DashProfile = () => {
     setProfile(form.getValues());
   };
 
+  const calculateExperienceYears = (
+    experiences?: Array<{ from: string; to: string }>,
+  ) => {
+    if (!experiences || experiences.length === 0) return 0;
+
+    let totalMonths = 0;
+
+    experiences.forEach((exp) => {
+      if (!exp.from || !exp.to) return;
+
+      const start = new Date(exp.from);
+      const end = new Date(exp.to);
+
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) return;
+
+      const months =
+        (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth());
+
+      if (months > 0) totalMonths += months;
+    });
+
+    // return years with 1 decimal (ex: 3.5)
+    return +(totalMonths / 12).toFixed(1);
+  };
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    data.experienceYears = calculateExperienceYears(data.experience);
     setLoadingEdit(true);
     try {
       const res = await fetch(
@@ -604,13 +640,13 @@ const DashProfile = () => {
                           </div>
                           <FormField
                             control={form.control}
-                            name="firstName"
+                            name="professionalTitle"
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
                                   <div className="relative">
                                     <Input
-                                      placeholder="First Name"
+                                      placeholder="Professional Title"
                                       type="text"
                                       className="input-filter text-gray-900 bg-gray-50 border-gray-200 pl-2! text-3xl font-bold"
                                       {...field}
@@ -627,7 +663,7 @@ const DashProfile = () => {
                             {profile.firstName} {profile.lastName}
                           </h2>
                           <p className="text-xl text-[#008CBA] font-medium mt-1">
-                            software Engineer
+                            {profile.professionalTitle}
                           </p>
                         </>
                       )}

@@ -38,7 +38,7 @@ export default function SideBar({
       id: "jobPost",
       label: "Job Post",
       icon: FileText,
-      url: activeTab === "jobPost" ? "jobPost" : "createJobPost",
+      url: "jobPost",
     },
     {
       id: "companyProfile",
@@ -47,7 +47,7 @@ export default function SideBar({
       url: "company",
     },
     { id: "profile", label: "Profile", icon: User, url: "profile" },
-    { id: "settings", label: "Settings", icon: Settings, url: "settings" },
+    { id: "settings", label: "Settings", icon: Settings, url: "setting" },
   ];
 
   const handleLogOut = async () => {

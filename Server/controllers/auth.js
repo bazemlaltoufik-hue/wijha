@@ -210,3 +210,57 @@ export const updateUser = async (req, res, next) => {
     res.status(500).json(error.message);
   }
 };
+
+export const updatePassword = async (req, res) => {
+  const { id } = req.params;
+  const { currentPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    const isPasswordValid = bcryptjs.compareSync(
+      currentPassword,
+      user.password,
+    );
+    if (!isPasswordValid) {
+      return res
+        .status(401)
+        .json({ message: "Current password is incorrect." });
+    }
+    const hashedNewPassword = bcryptjs.hashSync(newPassword, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+    res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    const { search, address, language, skills, minExp } = req.query;
+    const query = {};
+    if (search) {
+      query.$or = [
+        { firstName: { $regex: search, $options: "i" } },
+        { lastName: { $regex: search, $options: "i" } },
+      ];
+    }
+    if (address) query.address = { $regex: address, $options: "i" };
+    if (language) {
+      query.languages = {
+        $elemMatch: {
+          name: { $regex: new RegExp(`^${language}$`, "i") },
+        },
+      };
+    }
+    if (skills) query.skills = { $in: [skills] };
+    if (minExp) query.experienceYears = { $gte: minExp };
+    const users = await JobSeeker.find(query);
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error.message);
+  }
+};

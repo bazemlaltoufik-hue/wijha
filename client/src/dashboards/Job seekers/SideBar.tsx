@@ -40,7 +40,7 @@ export default function SideBar({
     },
     { id: "saved", label: "Saved Jobs", icon: BookmarkIcon, url: "saved" },
     { id: "profile", label: "Profile", icon: User, url: "profile" },
-    { id: "settings", label: "Settings", icon: Settings, url: "settings" },
+    { id: "settings", label: "Settings", icon: Settings, url: "setting" },
   ];
 
   const handleLogOut = async () => {

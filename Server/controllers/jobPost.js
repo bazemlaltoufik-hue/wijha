@@ -107,7 +107,7 @@ export const getAllJobPosts = async (req, res) => {
       { description: { $regex: search, $options: "i" } },
     ];
   }
-  query.state = state;
+  if (state) query.state = state;
   if (createdBy) query.employerId = createdBy;
   if (location) query.location = location;
   if (jobType) query.jobType = jobType;
@@ -125,7 +125,6 @@ export const getAllJobPosts = async (req, res) => {
       .skip(skip)
       .limit(pageSize);
     const totalcount = await JobPost.countDocuments(query);
-    console.log(jobPosts);
     res.status(200).json({ jobPosts, totalcount });
   } catch (error) {
     console.log(error);

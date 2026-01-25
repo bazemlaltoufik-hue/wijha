@@ -23,6 +23,8 @@ import DashJobPost from "@/dashboards/Employer/DashJobPosts";
 import DashEmployeers from "./DashEmployeers";
 import CreateJobPost from "./CreateJobPost";
 import JobPostDetails from "./JobPostDetails";
+import DashSettings from "./DashSettings";
+import JobseekerDashboard from "./DashProfiles";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -60,6 +62,8 @@ const Dashboard = () => {
         {tab === "createJobPost" && <CreateJobPost />}
         {tab === "jobPostDetails" && <JobPostDetails />}
         {tab === "jobPost" && <DashJobPost />}
+        {tab === "setting" && <DashSettings />}
+        {tab === "profiles" && <JobseekerDashboard />}
       </div>
     </div>
   );

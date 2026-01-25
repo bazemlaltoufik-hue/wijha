@@ -22,6 +22,7 @@ import DashMain from "./DashMain";
 import DashProfile from "./DashProfile";
 import DashApplication from "./DashApplication";
 import DashSaved from "./DashSaved";
+import DashSettings from "./DashSettings";
 import img from "@/assets/1.png";
 
 const Dashboard = () => {
@@ -60,6 +61,7 @@ const Dashboard = () => {
         {tab === "profile" && <DashProfile />}
         {tab === "application" && <DashApplication />}
         {tab === "saved" && <DashSaved />}
+        {tab === "setting" && <DashSettings />}
       </div>
     </div>
   );
