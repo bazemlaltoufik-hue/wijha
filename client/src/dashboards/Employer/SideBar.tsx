@@ -46,7 +46,7 @@ export default function SideBar({
       icon: Building2,
       url: "company",
     },
-    { id: "profile", label: "Profile", icon: User, url: "profile" },
+    { id: "profile", label: "Profile", icon: User, url: "profiles" },
     { id: "settings", label: "Settings", icon: Settings, url: "setting" },
   ];
 
