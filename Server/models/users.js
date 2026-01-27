@@ -63,6 +63,7 @@ const companySchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
+    required: true,
     unique: true,
   },
   logo: {
@@ -130,8 +131,8 @@ const jobSeekerSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    unique: true,
     required: true,
+    unique: true,
   },
   address: {
     type: String,

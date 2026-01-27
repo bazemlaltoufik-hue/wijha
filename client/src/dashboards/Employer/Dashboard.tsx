@@ -1,21 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
-import {
-  Search,
-  Bell,
-  User,
-  Briefcase,
-  FileText,
-  BookmarkIcon,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-  MapPin,
-  Clock,
-  DollarSign,
-  TrendingUp,
-} from "lucide-react";
 import SideBar from "./SideBar";
 import DashHeader from "./DashHeader";
 import DashCompanyProfile from "@/dashboards/Employer/DashProfileCompany";

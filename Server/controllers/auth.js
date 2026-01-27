@@ -41,13 +41,15 @@ export const register = async (req, res, next) => {
     res.status(400).json({ message: "Invalid user role." });
   }
 
+  let newUser;
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "User already exists." });
     }
     const hashedPassword = bcryptjs.hashSync(password, 10);
-    const newUser = new User({ email, password: hashedPassword, role });
+    newUser = new User({ email, password: hashedPassword, role });
     await newUser.save();
     if (role === "jobseeker") {
       const newJobSeeker = new JobSeeker({
@@ -65,12 +67,19 @@ export const register = async (req, res, next) => {
         industry,
         size,
         address,
+        phoneNumber,
       });
       await newEmployer.save();
     }
     res.status(201).json({ message: "User registered successfully." });
   } catch (error) {
-    next(error);
+    if (error.code === 11000 && error.keyPattern.phoneNumber) {
+      await User.findByIdAndDelete(newUser._id);
+      return res.status(400).json({
+        message: "Phone number already used",
+      });
+    }
+    res.status(500).json(error.message);
   }
 };
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Briefcase,
   User,
   Mail,
   Lock,
@@ -36,6 +35,7 @@ import logo from "../assets/1.png";
 import { Spinner } from "@/components/ui/spinner";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
+import { industries, companySize } from "@/lib/data";
 
 export default function Registre() {
   const [loading, setLoading] = useState(false);
@@ -70,33 +70,6 @@ export default function Registre() {
       });
     }
   }, [accountType]);
-
-  const industries = [
-    "Technology & Digital",
-    "Engineering & Technical",
-    "Business & Corporate Services",
-    "Sales, Marketing & Customer Service",
-    "Industrial & Manufacturing",
-    "Creative, Media & Design",
-    "Healthcare & Life Sciences",
-    "Education & Training",
-    "Government & Public Sector",
-    "Hospitality & Tourism",
-    "Transportation & Logistics",
-    "Energy & Environment",
-    "Agriculture & Food",
-    "Non-Profit & Community Services",
-    "Others",
-  ];
-
-  const companySize = [
-    "1-10",
-    "11-50",
-    "51-200",
-    "201-500",
-    "501-1000",
-    "1000+",
-  ];
 
   const jobSeekerSchema = z
     .object({
@@ -143,6 +116,10 @@ export default function Registre() {
       size: z.string().min(1, "Company size is required."),
       address: z.string().min(1, "Address is required."),
       industry: z.string().min(1, "Industry is required."),
+      phoneNumber: z
+        .string()
+        .min(1, "Phone number is required.")
+        .regex(/^0[5-7]\d{8}$/, "Invalid Phone number"),
       email: z
         .string()
         .min(1, "Email is required.")
@@ -193,13 +170,16 @@ export default function Registre() {
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...data, role: accountType }),
         },
-        body: JSON.stringify({ ...data, role: accountType }),
-      });
+      );
       const result = await res.json();
       if (!res.ok) {
         setErrorMessage(result.message || "Registration failed.");
@@ -529,6 +509,31 @@ export default function Registre() {
                                 <Input
                                   placeholder="Acme Corporation"
                                   type="text"
+                                  {...field}
+                                  className="input"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage className="input-msg" />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Phone Number */}
+                      <FormField
+                        control={form.control}
+                        name="phoneNumber"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="input-label">
+                              Phone Number
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Phone className="input-icon" size={20} />
+                                <Input
+                                  placeholder="+213 612345678"
+                                  type="tel"
                                   {...field}
                                   className="input"
                                 />

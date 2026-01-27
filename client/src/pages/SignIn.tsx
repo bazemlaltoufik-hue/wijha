@@ -1,4 +1,4 @@
-import { Briefcase, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -16,7 +16,7 @@ import { Button } from "../components/ui/button";
 import img from "../assets/1.png";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Spinner } from "@/components/ui/spinner";
 import { signInSuccess } from "@/redux/user/userSlice";
 
@@ -25,8 +25,6 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-
-  const { currentUser } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
 
   const FormSchema = z.object({

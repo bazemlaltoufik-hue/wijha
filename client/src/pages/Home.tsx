@@ -1,12 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Briefcase,
-  Users,
-  Search,
-  TrendingUp,
   Shield,
-  Zap,
-  ChevronRight,
   Star,
   MapPin,
   Clock,
