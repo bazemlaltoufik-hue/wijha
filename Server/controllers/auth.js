@@ -216,6 +216,7 @@ export const updateUser = async (req, res, next) => {
         .json({ ...updatedJobSeeker._doc, email: updatedUser.email });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json(error.message);
   }
 };

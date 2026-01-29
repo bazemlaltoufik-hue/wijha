@@ -25,6 +25,8 @@ import {
   Pen,
   X,
   PlusIcon,
+  Building,
+  Building2Icon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -501,11 +503,17 @@ export default function DashCompanyProfile() {
                   <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 -mt-20">
                     {/* Logo with Edit Button Overlay */}
                     <div className="relative m-auto sm:m-0">
-                      <img
-                        src={companyInfo.logo || ""}
-                        alt="logo"
-                        className="w-32 h-32 rounded-xl border-4 border-white shadow-lg object-cover bg-white"
-                      />
+                      {companyInfo.logo ? (
+                        <img
+                          src={companyInfo.logo}
+                          alt="logo"
+                          className="w-32 h-32 rounded-xl border-4 border-white shadow-lg object-cover bg-white"
+                        />
+                      ) : (
+                        <div className="bg-[#008CBA] w-32 h-32 flex items-center justify-center rounded-xl border-4 border-white shadow-lg">
+                          <Building2Icon className=" text-white w-24 h-24" />
+                        </div>
+                      )}
                       {editMode && (
                         <>
                           <FormField
@@ -735,6 +743,7 @@ export default function DashCompanyProfile() {
                 <div className="lg:col-span-2">
                   <div className="flex justify-center bg-white rounded-lg shadow-sm mb-4">
                     <button
+                      type="button"
                       onClick={() => setSection("information")}
                       className={`flex-1 ${
                         section === "information"
@@ -745,6 +754,7 @@ export default function DashCompanyProfile() {
                       Information
                     </button>
                     <button
+                      type="button"
                       onClick={() => setSection("fiscal")}
                       className={`flex-1 ${
                         section === "fiscal"

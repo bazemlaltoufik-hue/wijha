@@ -85,7 +85,7 @@ export default function DashJobPost() {
           data?.workArrangement && `&workArrangement=${data.workArrangement}`
         }${
           data?.experienceLevel && `&experienceLevel=${data.experienceLevel}`
-        }${data?.educationLevel && `&educationLevel=${data.educationLevel}`}`
+        }${data?.educationLevel && `&educationLevel=${data.educationLevel}`}`,
       );
       const info = await res.json();
       if (!res.ok) {
@@ -135,20 +135,23 @@ export default function DashJobPost() {
   const handleChangeState = async (jobId: string, newState: string) => {
     setLoadingState(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/jobPost/${jobId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/jobPost/${jobId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ state: newState }),
         },
-        body: JSON.stringify({ state: newState }),
-      });
+      );
       const info = await res.json();
       if (res.ok) {
         // Update the job state in the local state
         setJobs((prevJobs) =>
           prevJobs.map((job) =>
-            job._id === jobId ? { ...job, state: newState } : job
-          )
+            job._id === jobId ? { ...job, state: newState } : job,
+          ),
         );
         toast.success("Job state updated successfully");
       } else {
@@ -860,7 +863,7 @@ export default function DashJobPost() {
                           {!loadingState && job.state === "Draft" && (
                             <Button
                               onClick={() =>
-                                handleChangeState(job._id, "in-review")
+                                handleChangeState(job._id, "In-review")
                               }
                               className="cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"
                               title="Publish"
@@ -901,7 +904,7 @@ export default function DashJobPost() {
                           <Button
                             onClick={() =>
                               navigate(
-                                `/dashboard?tab=jobPostDetails&jobPost=${job._id}`
+                                `/dashboard?tab=jobPostDetails&jobPost=${job._id}`,
                               )
                             }
                             className=" cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"

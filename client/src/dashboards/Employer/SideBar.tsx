@@ -1,11 +1,8 @@
 import {
-  BookmarkIcon,
   Briefcase,
   Building2,
-  ClosedCaption,
   FileText,
   LogOut,
-  Search,
   Settings,
   User,
   X,
@@ -13,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import img from "@/assets/1.png";
+import img1 from "@/assets/5.png";
 import { useDispatch } from "react-redux";
 import { signout } from "@/redux/user/userSlice";
 
@@ -86,8 +84,9 @@ export default function SideBar({
         {/* Logo */}
         <div className="flex items-center justify-between  h-16 px-6 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <div className="w-24 rounded-lg flex items-center justify-center">
-              <img src={img} alt="Logo" className="" />
+            <div className="w-full rounded-lg flex items-center justify-center">
+              <img src={img} alt="Logo" className="h-16" />
+              <img src={img1} alt="Logo" className="w-20" />
             </div>
           </div>
           <button

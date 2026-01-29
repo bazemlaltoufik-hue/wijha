@@ -19,6 +19,7 @@ import {
   Award,
   ChevronDownIcon,
   XIcon,
+  User,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -436,7 +437,7 @@ const DashProfile = () => {
   };
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    data.experienceYears = calculateExperienceYears(data.experience);
+    console.log(data);
     setLoadingEdit(true);
     try {
       const res = await fetch(
@@ -572,11 +573,17 @@ const DashProfile = () => {
                   <div className="flex flex-col md:flex-row gap-4 md:gap-6 -mt-16">
                     {/* Profile Photo */}
                     <div className="relative flex-shrink-0">
-                      <img
-                        src={profile.profileImage}
-                        alt="Profile"
-                        className="w-32 h-32 rounded-2xl object-cover border-4 border-white shadow-lg"
-                      />
+                      {profile.profileImage ? (
+                        <img
+                          src={profile.profileImage}
+                          alt="Profile"
+                          className="w-32 h-32 rounded-2xl object-cover border-4 border-white shadow-lg"
+                        />
+                      ) : (
+                        <div className="bg-[#008CBA] w-32 h-32 flex items-center justify-center rounded-xl border-4 border-white shadow-lg">
+                          <User className=" text-white w-18 h-18" />
+                        </div>
+                      )}
                       {isEditing && (
                         <>
                           <Input
@@ -759,7 +766,7 @@ const DashProfile = () => {
                     <div className="flex items-center gap-2 mb-4">
                       <div className="w-1 h-6 bg-[#008CBA] rounded-full"></div>
                       <h3 className="text-xl font-bold text-gray-900">
-                        Résumé Professionnel
+                        Professional Summary
                       </h3>
                     </div>
                     {isEditing ? (
@@ -793,7 +800,7 @@ const DashProfile = () => {
                       <div className="flex items-center gap-2">
                         <div className="w-1 h-6 bg-blue rounded-full"></div>
                         <h3 className="text-xl font-bold text-gray-900">
-                          Expérience Professionnelle
+                          Professional Experience
                         </h3>
                       </div>
                       {isEditing && (

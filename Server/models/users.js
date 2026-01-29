@@ -149,8 +149,8 @@ const jobSeekerSchema = new mongoose.Schema({
       {
         title: String,
         company: String,
-        from: Date,
-        to: Date,
+        from: String,
+        to: String,
         description: String,
       },
     ],

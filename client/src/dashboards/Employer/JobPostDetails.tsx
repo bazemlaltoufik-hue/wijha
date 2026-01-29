@@ -52,13 +52,19 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
+import { useSelector } from "react-redux";
+import { current } from "@reduxjs/toolkit";
+import { toast } from "sonner";
 
 export default function JobPostManager() {
   const [applicants, setApplicants] = useState<Array<any>>([]);
+  const [loadingSave, setLoadingSave] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
-  const [state, setState] = useState("");
+  const [state, setState] = useState("Published");
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
@@ -78,8 +84,11 @@ export default function JobPostManager() {
     deadline: new Date(),
   });
 
+  const { currentUser } = useSelector((state: any) => state.user);
+
   useEffect(() => {
     const getJobPost = async () => {
+      setLoading(true);
       try {
         const res = await fetch(
           `${import.meta.env.VITE_API_URL}/api/jobpost/${tabFromUrl}`,
@@ -93,6 +102,8 @@ export default function JobPostManager() {
         }
       } catch (error) {
         console.error("Error fetching job post:", error);
+      } finally {
+        setLoading(false);
       }
     };
     getJobPost();
@@ -143,7 +154,7 @@ export default function JobPostManager() {
       }
     };
     getApplicants();
-  });
+  }, []);
 
   const FormSchema = z.object({
     title: z.string().min(1, "Job title is required."),
@@ -166,7 +177,7 @@ export default function JobPostManager() {
       title: "",
       description: "",
       location: "",
-      companyName: "TechCorp Solutions",
+      companyName: currentUser.companyName || "",
       industry: "",
       jobType: "",
       workArrangement: "",
@@ -180,6 +191,7 @@ export default function JobPostManager() {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
+      setLoadingSave(true);
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/jobpost/${tabFromUrl}`,
         {
@@ -187,17 +199,20 @@ export default function JobPostManager() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({ ...data, state }),
         },
       );
       const result = await res.json();
       if (res.ok) {
+        toast.success("Job post updated successfully!");
         navigate("/dashboard?tab=jobPost");
       } else {
         console.error("Failed to update job post:", result);
       }
     } catch (error) {
       console.error("Error updating job post:", error);
+    } finally {
+      setLoadingSave(false);
     }
   };
 
@@ -239,7 +254,56 @@ export default function JobPostManager() {
         </div>
 
         {/* Job Details Tab */}
-        {activeTab === "details" && (
+        {loading && activeTab === "details" && (
+          <div className="space-y-2">
+            {/* ===== Page Header ===== */}
+            <div className="space-y-2">
+              <Skeleton className="h-7 w-56 bg-gray-400" />
+              <Skeleton className="h-4 w-96 bg-gray-400" />
+            </div>
+
+            {/* ===== Content ===== */}
+            <div className="grid grid-cols-1  gap-3">
+              {/* ===== Main Form ===== */}
+              <div className="space-y-2">
+                {/* Job title */}
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-32 bg-gray-400" />
+                  <Skeleton className="h-10 w-full bg-gray-400" />
+                </div>
+
+                {/* Job description */}
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-40 bg-gray-400" />
+                  <Skeleton className="h-32 w-full" />
+                </div>
+
+                {/* Two-column inputs */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="space-y-2">
+                      <Skeleton className="h-4 w-28 bg-gray-400" />
+                      <Skeleton className="h-10 w-full bg-gray-400" />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Skills / tags */}
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-36 bg-gray-400" />
+                  <Skeleton className="h-10 w-full bg-gray-400" />
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3 pt-4">
+                  <Skeleton className="h-10 w-32 bg-gray-400" />
+                  <Skeleton className="h-10 w-24 bg-gray-400" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {!loading && activeTab === "details" && (
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <Form {...form}>
               <form
@@ -317,7 +381,7 @@ export default function JobPostManager() {
                               <Mail className="input-icon" size={20} />
                               <Input
                                 disabled
-                                placeholder="e.g., Acme Corp"
+                                placeholder=""
                                 type="text"
                                 {...field}
                                 className="input"
@@ -890,19 +954,37 @@ Requirements (Qualifications & Skills)
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
                   <Button
-                    onClick={() => setState("draft")}
+                    onClick={() => setState("Draft")}
                     type="submit"
                     className="border-box cursor-pointer h-auto flex-1 px-4 py-2 border-2 border-[#008CBA] text-[#008CBA] font-semibold rounded-lg hover:bg-blue-50 transition"
                   >
-                    <Save className="w-5 h-5" />
-                    <span>Save Draft</span>
+                    {loadingSave ? (
+                      <>
+                        <Spinner className="h-4 w-4" />
+                        Loading
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5" />
+                        <span>Save Draft</span>
+                      </>
+                    )}
                   </Button>
                   <Button
                     type="submit"
                     className="border-box cursor-pointer flex-1 px-4 py-2 bg-[#008CBA] text-white h-auto font-semibold rounded-lg hover:opacity-90 transition"
                   >
-                    <Send className="w-5 h-5" />
-                    <span>Create</span>
+                    {loadingSave ? (
+                      <>
+                        <Spinner className="h-4 w-4" />
+                        Loading
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" />
+                        <span>Create</span>
+                      </>
+                    )}
                   </Button>
                 </div>
               </form>
@@ -911,7 +993,7 @@ Requirements (Qualifications & Skills)
         )}
 
         {/* Applicants Tab */}
-        {activeTab === "applicants" && (
+        {applicants.length > 0 && activeTab === "applicants" && (
           <div className="flex flex-col gap-4 mt-6">
             {applicants.map((applicant) => (
               <div
@@ -1009,6 +1091,18 @@ Requirements (Qualifications & Skills)
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {applicants.length === 0 && activeTab === "applicants" && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
+            <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-slate-800 mb-2">
+              No applicants found
+            </h3>
+            <p className="text-slate-600">
+              There are currently no applicants for this job post.
+            </p>
           </div>
         )}
       </div>
