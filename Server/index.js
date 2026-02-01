@@ -10,12 +10,7 @@ import application from "./routes/application.js";
 const app = express();
 dotenv.config();
 
-app.use(
-  cors({
-    origin: "https://wijha-1.onrender.com/",
-    credentials: true,
-  }),
-);
+app.use(cors());
 
 mongoose
   .connect(process.env.MONGO)
