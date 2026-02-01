@@ -12,7 +12,11 @@ dotenv.config();
 
 app.use(
   cors({
+<<<<<<< HEAD
     origin: "https://wijha-z3rf.onrender.com",
+=======
+    origin: "https://wijha-1.onrender.com/",
+>>>>>>> 7f4a462317d40e0bcaac0e8b5b12c241bbf082d4
     credentials: true,
   }),
 );
