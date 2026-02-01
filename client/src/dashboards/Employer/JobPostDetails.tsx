@@ -64,7 +64,7 @@ export default function JobPostManager() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("details");
-  const [state, setState] = useState("Published");
+  const [state, setState] = useState("In-review");
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
@@ -982,7 +982,7 @@ Requirements (Qualifications & Skills)
                     ) : (
                       <>
                         <Send className="w-5 h-5" />
-                        <span>Create</span>
+                        <span>Save Changes</span>
                       </>
                     )}
                   </Button>

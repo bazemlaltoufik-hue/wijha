@@ -103,6 +103,7 @@ export default function SideBar({
             const Icon = item.icon;
             return (
               <button
+                disabled={item.id === "profile" ? true : false}
                 key={item.id}
                 onClick={() => navigate(`/dashboard?tab=${item.url}`)}
                 className={`cursor-pointer flex items-center justify-start  gap-3  px-4 py-3 rounded-lg transition-colors ${
@@ -113,6 +114,11 @@ export default function SideBar({
               >
                 <Icon className="w-6 h-6" />
                 <span className="font-medium">{item.label}</span>
+                {item.id === "profile" && (
+                  <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">
+                    Coming Soon
+                  </span>
+                )}
               </button>
             );
           })}

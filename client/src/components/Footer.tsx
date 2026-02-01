@@ -1,4 +1,5 @@
-import { Briefcase } from "lucide-react";
+import img from "@/assets/1.png";
+import img1 from "@/assets/5.png";
 
 function Footer() {
   return (
@@ -7,41 +8,13 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#008CBA] to-[#005F7F] rounded-xl flex items-center justify-center">
-                <Briefcase className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold">JobHub</span>
+              <img src={img} alt="Logo" className="h-16" />
+              <img src={img1} alt="Logo" className="w-20" />
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Empowering careers and connecting talent with opportunity. Join
               the future of job searching.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#008CBA] transition-colors"
-              >
-                <span className="text-sm font-bold">tw</span>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#008CBA] transition-colors"
-              >
-                <span className="text-sm font-bold">fb</span>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#008CBA] transition-colors"
-              >
-                <span className="text-sm font-bold">in</span>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-[#008CBA] transition-colors"
-              >
-                <span className="text-sm font-bold">ig</span>
-              </a>
-            </div>
           </div>
           <div>
             <h4 className="font-bold text-lg mb-4">For Job Seekers</h4>
@@ -157,7 +130,7 @@ function Footer() {
         </div>
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2024 JobHub. All rights reserved.
+            © 2026 Wijha. All rights reserved.
           </p>
           <div className="flex"></div>
         </div>

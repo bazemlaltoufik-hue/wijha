@@ -150,12 +150,6 @@ export default function DashApplication() {
                       </span>
                     </div>
                   </div>
-
-                  <div className="w-full flex items-center justify-end">
-                    <button className=" py-2 px-6 rounded-lg font-semibold text-white transition-all bg-[#008CBA] hover:bg-[#00668C]">
-                      Apply Now
-                    </button>
-                  </div>
                 </div>
               );
             })}

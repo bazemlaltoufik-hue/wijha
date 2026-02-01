@@ -107,12 +107,15 @@ export default function JobOfferDetails() {
     const getJobData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/jobPost/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/jobPost/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        });
+        );
         const data = await res.json();
 
         if (res.ok) {
@@ -161,17 +164,20 @@ export default function JobOfferDetails() {
   const handleCreateApplication = async () => {
     setApplyLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/application/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/application/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            jobSeekerId: currentUser.userId,
+            employerId: data.employerIdInfo,
+            jobOfferId: data._id,
+          }),
         },
-        body: JSON.stringify({
-          jobSeekerId: currentUser.userId,
-          employerId: data.employerIdInfo,
-          jobOfferId: data._id,
-        }),
-      });
+      );
 
       const created = await res.json();
 
@@ -549,17 +555,19 @@ export default function JobOfferDetails() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <div className="w-10 h-10 bg-[#E6F7FB] rounded-lg flex items-center justify-center">
-                      <DollarSign className="w-5 h-5 text-[#008CBA]" />
+                  {data.salaryRange && (
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                      <div className="w-10 h-10 bg-[#E6F7FB] rounded-lg flex items-center justify-center">
+                        <DollarSign className="w-5 h-5 text-[#008CBA]" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Salary Range</p>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {data && data.salaryRange}$
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Salary Range</p>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {data && data.salaryRange}$
-                      </p>
-                    </div>
-                  </div>
+                  )}
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                     <div className="w-10 h-10 bg-[#E6F7FB] rounded-lg flex items-center justify-center">
                       <Users className="w-5 h-5 text-[#008CBA]" />

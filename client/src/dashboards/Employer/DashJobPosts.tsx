@@ -912,12 +912,12 @@ export default function DashJobPost() {
                           >
                             <Edit2 className="w-4 h-4" />
                           </Button>
-                          <Button
+                          {/* <Button
                             className="cursor-pointer p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
-                          </Button>
+                          </Button> */}
                         </div>
                       </td>
                     </tr>

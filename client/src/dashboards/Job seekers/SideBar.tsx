@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import img from "@/assets/1.png";
+import img1 from "@/assets/5.png";
 import { useDispatch } from "react-redux";
 import { signout } from "@/redux/user/userSlice";
 
@@ -79,8 +80,9 @@ export default function SideBar({
         {/* Logo */}
         <div className="flex items-center justify-between  h-16 px-6 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <div className="w-24 rounded-lg flex items-center justify-center">
-              <img src={img} alt="Logo" className="" />
+            <div className="w-full rounded-lg flex items-center justify-center">
+              <img src={img} alt="Logo" className="h-16" />
+              <img src={img1} alt="Logo" className="w-20" />
             </div>
           </div>
           <button
@@ -119,7 +121,7 @@ export default function SideBar({
             className="cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-gray-50 rounded-lg transition-colors"
           >
             <LogOut className="w-6 h-6" />
-            <span className="hidden md:block font-medium">Logout</span>
+            <span className="font-medium">Logout</span>
           </button>
         </div>
       </div>

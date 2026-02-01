@@ -149,8 +149,8 @@ const jobSeekerSchema = new mongoose.Schema({
       {
         title: String,
         company: String,
-        from: String,
-        to: String,
+        from: Date,
+        to: Date,
         description: String,
       },
     ],
@@ -176,7 +176,7 @@ const jobSeekerSchema = new mongoose.Schema({
     type: [String],
   },
   languages: {
-    type: [{ name: String, proficiency: String }],
+    type: [{ language: String, level: String }],
   },
   linkedIn: {
     type: String,

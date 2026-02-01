@@ -157,7 +157,7 @@ const DashSaved = () => {
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-4">
                       <div className="w-14 h-14 bg-[#E6F7FB] rounded-lg hidden sm:flex items-center justify-center text-2xl">
-                        {job?.employerIdInfo.logo}
+                        <img src={job?.employerIdInfo.logo} alt="logo" />
                       </div>
                       <div>
                         <h4 className="text-lg font-bold text-gray-900 mb-1">

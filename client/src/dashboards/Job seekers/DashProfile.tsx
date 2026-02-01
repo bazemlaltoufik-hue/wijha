@@ -22,7 +22,7 @@ import {
   User,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import z, { set } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -67,21 +67,25 @@ import { Spinner } from "@/components/ui/spinner";
 const DashProfile = () => {
   const [loading, setLoading] = useState(true);
   const [loadingEdit, setLoadingEdit] = useState(false);
-  const [openFrom, setOpenFrom] = useState(false);
-  const [openTo, setOpenTo] = useState(false);
+  const [loadingUploadProfileImage, setLoadingUpLoadProfileImage] =
+    useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [experience, setExperience] = useState({
     title: "",
     company: "",
-    from: "",
-    to: "",
+    fromYear: "",
+    fromMonth: "",
+    toYear: "",
+    toMonth: "",
     description: "",
   });
   const [formation, setFormation] = useState({
     title: "",
     institution: "",
-    from: "",
-    to: "",
+    fromYear: "",
+    fromMonth: "",
+    toYear: "",
+    toMonth: "",
   });
   const [language, setLanguage] = useState({
     language: "",
@@ -105,27 +109,22 @@ const DashProfile = () => {
     experience?: Array<{
       title: string;
       company: string;
-      from: string;
-      to: string;
+      from: Date;
+      to: Date;
       description: string;
     }>;
     experienceYears?: number;
     education?: Array<{
       title: string;
       institution: string;
-      from: string;
-      to: string;
+      from: Date;
+      to: Date;
     }>;
     languages?: Array<{
       language: string;
       level: string;
     }>;
     skills?: string[];
-    accounts?: {
-      linkedin?: string;
-      github?: string;
-      portfolio?: string;
-    };
     CV?: string;
   }>({});
 
@@ -148,10 +147,10 @@ const DashProfile = () => {
     experience: z
       .array(
         z.object({
-          title: z.string().min(1, "Job title is required."),
-          company: z.string().min(1, "Company is required."),
-          from: z.string().min(1, "Duration is required."),
-          to: z.string().min(1, "Duration is required."),
+          title: z.string().min(1, "Job title is required.").optional(),
+          company: z.string().min(1, "Company is required.").optional(),
+          from: z.coerce.date(),
+          to: z.coerce.date(),
           description: z.string().optional(),
         }),
       )
@@ -160,18 +159,18 @@ const DashProfile = () => {
     education: z
       .array(
         z.object({
-          title: z.string().min(1, "Formation title is required."),
-          institution: z.string().min(1, "Institution is required."),
-          from: z.string().min(1, "Duration is required."),
-          to: z.string().min(1, "Duration is required."),
+          title: z.string().min(1, "Formation title is required.").optional(),
+          institution: z.string().min(1, "Institution is required.").optional(),
+          from: z.coerce.date(),
+          to: z.coerce.date(),
         }),
       )
       .optional(),
     languages: z
       .array(
         z.object({
-          language: z.string().min(1, "Language is required."),
-          level: z.string().min(1, "Level is required."),
+          language: z.string().min(1, "Language is required.").optional(),
+          level: z.string().min(1, "Level is required.").optional(),
         }),
       )
       .optional(),
@@ -214,6 +213,17 @@ const DashProfile = () => {
         );
         const data = await res.json();
         if (res.ok) {
+          data.experience = data.experience?.map((exp) => ({
+            ...exp,
+            from: new Date(exp.from),
+            to: new Date(exp.to),
+          }));
+
+          data.education = data.education?.map((edu) => ({
+            ...edu,
+            from: new Date(edu.from),
+            to: new Date(edu.to),
+          }));
           setProfile(data);
         } else {
           console.error("Failed to fetch user profile");
@@ -251,6 +261,7 @@ const DashProfile = () => {
   }, [profile]);
 
   const handleProfileImgUpload = async (e: any) => {
+    setLoadingUpLoadProfileImage(true);
     const files = e.target.files;
     if (!files || files.length === 0) return;
     const file = files[0];
@@ -271,7 +282,6 @@ const DashProfile = () => {
       .getPublicUrl(`public/${fileName}`);
 
     if (!data?.publicUrl) return;
-    console.log(data.publicUrl);
 
     data &&
       form.setValue("profileImage", data.publicUrl, {
@@ -279,10 +289,25 @@ const DashProfile = () => {
         shouldTouch: true,
       });
     setProfile(form.getValues());
+    setLoadingUpLoadProfileImage(false);
   };
 
   const handleAddFormation = () => {
-    const newFormation = formation;
+    const from = new Date(
+      Number(formation.fromYear),
+      Number(formation.fromMonth) - 1,
+    );
+    const to = new Date(
+      Number(formation.toYear),
+      Number(formation.toMonth) - 1,
+    );
+
+    const newFormation = {
+      title: formation.title,
+      institution: formation.institution,
+      from: from,
+      to: to,
+    };
 
     form.setValue(
       "education",
@@ -298,13 +323,30 @@ const DashProfile = () => {
     setFormation({
       title: "",
       institution: "",
-      from: "",
-      to: "",
+      fromMonth: "",
+      fromYear: "",
+      toMonth: "",
+      toYear: "",
     });
   };
 
   const handleAddExperience = () => {
-    const newExp = experience;
+    const from = new Date(
+      Number(experience.fromYear),
+      Number(experience.fromMonth) - 1,
+    );
+    const to = new Date(
+      Number(experience.toYear),
+      Number(experience.toMonth) - 1,
+    );
+
+    const newExp = {
+      title: experience.title,
+      company: experience.company,
+      from: from,
+      to: to,
+      description: experience.description,
+    };
 
     form.setValue(
       "experience",
@@ -320,8 +362,10 @@ const DashProfile = () => {
     setExperience({
       title: "",
       company: "",
-      from: "",
-      to: "",
+      fromMonth: "",
+      fromYear: "",
+      toMonth: "",
+      toYear: "",
       description: "",
     });
   };
@@ -400,13 +444,13 @@ const DashProfile = () => {
       .getPublicUrl(`public/${fileName}`);
 
     if (!data?.publicUrl) return;
-    console.log(data.publicUrl);
 
     data &&
       form.setValue("CV", data.publicUrl, {
         shouldDirty: true,
         shouldTouch: true,
       });
+
     setProfile(form.getValues());
   };
 
@@ -437,7 +481,18 @@ const DashProfile = () => {
   };
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+    data.experience = data.experience?.map((exp) => ({
+      ...exp,
+      from: new Date(exp.from),
+      to: new Date(exp.to),
+    }));
+
+    data.education = data.education?.map((edu) => ({
+      ...edu,
+      from: new Date(edu.from),
+      to: new Date(edu.to),
+    }));
+
     setLoadingEdit(true);
     try {
       const res = await fetch(
@@ -467,6 +522,26 @@ const DashProfile = () => {
       setIsEditing(false);
     }
   };
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const years = Array.from(
+    { length: new Date().getFullYear() - 1980 + 1 },
+    (_, i) => 1980 + i,
+  ).reverse();
 
   return (
     <Form {...form}>
@@ -597,7 +672,11 @@ const DashProfile = () => {
                             onClick={() => profileImg.current?.click()}
                             className="absolute bottom-2 right-2 bg-[#008CBA] text-white p-2 rounded-lg hover:bg-indigo-700 transition shadow-lg"
                           >
-                            <Upload className="w-4 h-4" />
+                            {loadingUploadProfileImage ? (
+                              <Spinner className="w-4 h-4" />
+                            ) : (
+                              <Upload className="w-4 h-4" />
+                            )}
                           </button>
                         </>
                       )}
@@ -841,77 +920,105 @@ const DashProfile = () => {
                                 className="input-filter pl-2!"
                               />
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col gap-2">
                               <div className="flex-1 flex flex-col gap-1">
                                 <Label className="input-label">From</Label>
-                                <Popover
-                                  open={openFrom}
-                                  onOpenChange={setOpenFrom}
-                                >
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      id="date"
-                                      className="input-filter flex w-full justify-between"
-                                    >
-                                      {experience.from
-                                        ? experience.from
-                                        : "Select date"}
-                                      <ChevronDownIcon />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent
-                                    className="w-auto overflow-hidden p-0 bg-white"
-                                    align="start"
+                                <div className="flex justify-center items-center gap-2">
+                                  <Select
+                                    onValueChange={(value) =>
+                                      setExperience((prev) => ({
+                                        ...prev,
+                                        fromMonth: value,
+                                      }))
+                                    }
+                                    value={experience.fromMonth}
                                   >
-                                    <Calendar
-                                      mode="single"
-                                      selected={experience.from}
-                                      captionLayout="dropdown"
-                                      onSelect={(date) => {
-                                        setExperience({
-                                          ...experience,
-                                          from: date.toLocaleDateString(),
-                                        });
-                                        setOpenFrom(false);
-                                      }}
-                                    />
-                                  </PopoverContent>
-                                </Popover>
+                                    <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                                      <SelectValue placeholder="Select Month" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                      {months.map((month, index) => (
+                                        <SelectItem
+                                          key={index}
+                                          value={(index + 1).toString()}
+                                        >
+                                          {month}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Select
+                                    onValueChange={(value) =>
+                                      setExperience((prev) => ({
+                                        ...prev,
+                                        fromYear: value,
+                                      }))
+                                    }
+                                  >
+                                    <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                                      <SelectValue placeholder="Select Year" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                      {years.map((year, index) => (
+                                        <SelectItem
+                                          key={index}
+                                          value={year.toString()}
+                                        >
+                                          {year}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                               </div>
                               <div className="flex-1 flex flex-col gap-1">
                                 <Label className="input-label">To</Label>
-                                <Popover open={openTo} onOpenChange={setOpenTo}>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      id="date"
-                                      className="input-filter flex w-full justify-between"
-                                    >
-                                      {experience.to
-                                        ? experience.to
-                                        : "Select date"}
-                                      <ChevronDownIcon />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent
-                                    className="w-auto overflow-hidden p-0 bg-white"
-                                    align="start"
+                                <div className="flex justify-center items-center gap-2">
+                                  <Select
+                                    onValueChange={(value) =>
+                                      setExperience((prev) => ({
+                                        ...prev,
+                                        toMonth: value,
+                                      }))
+                                    }
                                   >
-                                    <Calendar
-                                      mode="single"
-                                      selected={experience.to}
-                                      captionLayout="dropdown"
-                                      onSelect={(date) => {
-                                        setExperience({
-                                          ...experience,
-                                          to: date?.toLocaleDateString(),
-                                        });
-                                        setOpenTo(false);
-                                      }}
-                                    />
-                                  </PopoverContent>
-                                </Popover>
+                                    <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                                      <SelectValue placeholder="Select Month" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                      {months.map((month, index) => (
+                                        <SelectItem
+                                          key={index}
+                                          value={(index + 1).toString()}
+                                        >
+                                          {month}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Select
+                                    onValueChange={(value) =>
+                                      setExperience((prev) => ({
+                                        ...prev,
+                                        toYear: value,
+                                      }))
+                                    }
+                                  >
+                                    <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                                      <SelectValue placeholder="Select Year" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                      {years.map((year, index) => (
+                                        <SelectItem
+                                          key={index}
+                                          value={year.toString()}
+                                        >
+                                          {year}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                               </div>
                             </div>
                             <div className="flex flex-col gap-1 w-full">
@@ -969,15 +1076,21 @@ const DashProfile = () => {
                             {exp.company}
                           </p>
                           <p className="text-sm text-gray-500 mt-1">
-                            {exp.from} - {exp.to}
+                            {months[new Date(exp.from).getMonth()]}-
+                            {new Date(exp.from).getFullYear()}
+                            {"    "}
+                            {months[new Date(exp.to).getMonth()]}-
+                            {new Date(exp.to).getFullYear()}
                           </p>
                           <p className="text-gray-700 mt-3 leading-relaxed">
                             {exp.description}
                           </p>
-                          <XIcon
-                            onClick={() => handleRemoveExperience(index)}
-                            className="absolute text-red-500 cursor-pointer top-2 right-2 w-5 h-5"
-                          />
+                          {isEditing && (
+                            <XIcon
+                              onClick={() => handleRemoveExperience(index)}
+                              className="absolute text-red-500 cursor-pointer top-2 right-2 w-5 h-5"
+                            />
+                          )}
                         </div>
                       ))}
                     </div>
@@ -1030,79 +1143,108 @@ const DashProfile = () => {
                                 className="input-filter pl-2!"
                               />
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col gap-2">
                               <div className="flex-1 flex flex-col gap-1">
                                 <Label className="input-label">From</Label>
-                                <Popover
-                                  open={openFrom}
-                                  onOpenChange={setOpenFrom}
-                                >
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      id="date"
-                                      className="input-filter flex w-full justify-between"
-                                    >
-                                      {formation.from
-                                        ? formation.from
-                                        : "Select date"}
-                                      <ChevronDownIcon />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent
-                                    className="w-auto overflow-hidden p-0 bg-white"
-                                    align="start"
+                                <div className="flex justify-center items-center gap-2">
+                                  <Select
+                                    onValueChange={(value) =>
+                                      setFormation((prev) => ({
+                                        ...prev,
+                                        fromMonth: value,
+                                      }))
+                                    }
+                                    value={formation.fromMonth}
                                   >
-                                    <Calendar
-                                      mode="single"
-                                      selected={formation.from}
-                                      captionLayout="dropdown"
-                                      onSelect={(date) => {
-                                        setFormation({
-                                          ...formation,
-                                          from: date.toLocaleDateString(),
-                                        });
-                                        setOpenFrom(false);
-                                      }}
-                                    />
-                                  </PopoverContent>
-                                </Popover>
+                                    <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                                      <SelectValue placeholder="Select Month" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                      {months.map((month, index) => (
+                                        <SelectItem
+                                          key={index}
+                                          value={(index + 1).toString()}
+                                        >
+                                          {month}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Select
+                                    onValueChange={(value) =>
+                                      setFormation((prev) => ({
+                                        ...prev,
+                                        fromYear: value,
+                                      }))
+                                    }
+                                  >
+                                    <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                                      <SelectValue placeholder="Select Year" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                      {years.map((year, index) => (
+                                        <SelectItem
+                                          key={index}
+                                          value={year.toString()}
+                                        >
+                                          {year}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                               </div>
                               <div className="flex-1 flex flex-col gap-1">
                                 <Label className="input-label">To</Label>
-                                <Popover open={openTo} onOpenChange={setOpenTo}>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      id="date"
-                                      className="input-filter flex w-full justify-between"
-                                    >
-                                      {formation.to
-                                        ? formation.to
-                                        : "Select date"}
-                                      <ChevronDownIcon />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent
-                                    className="w-auto overflow-hidden p-0 bg-white"
-                                    align="start"
+                                <div className="flex justify-center items-center gap-2">
+                                  <Select
+                                    onValueChange={(value) =>
+                                      setFormation((prev) => ({
+                                        ...prev,
+                                        toMonth: value,
+                                      }))
+                                    }
                                   >
-                                    <Calendar
-                                      mode="single"
-                                      selected={formation.to}
-                                      captionLayout="dropdown"
-                                      onSelect={(date) => {
-                                        setFormation({
-                                          ...formation,
-                                          to: date?.toLocaleDateString(),
-                                        });
-                                        setOpenTo(false);
-                                      }}
-                                    />
-                                  </PopoverContent>
-                                </Popover>
+                                    <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                                      <SelectValue placeholder="Select Month" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                      {months.map((month, index) => (
+                                        <SelectItem
+                                          key={index}
+                                          value={(index + 1).toString()}
+                                        >
+                                          {month}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Select
+                                    onValueChange={(value) =>
+                                      setFormation((prev) => ({
+                                        ...prev,
+                                        toYear: value,
+                                      }))
+                                    }
+                                  >
+                                    <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                                      <SelectValue placeholder="Select Year" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white">
+                                      {years.map((year, index) => (
+                                        <SelectItem
+                                          key={index}
+                                          value={year.toString()}
+                                        >
+                                          {year}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                               </div>
                             </div>
+
                             <DialogFooter>
                               <DialogClose asChild>
                                 <Button
@@ -1134,53 +1276,73 @@ const DashProfile = () => {
                           </div>
                           <div>
                             <h4 className="font-bold text-gray-900">
-                              {edu.title}
+                              {edu?.title}
                             </h4>
                             <p className="text-[#008CBA] font-medium mt-1">
-                              {edu.institution}
+                              {edu?.institution}
                             </p>
                             <p className="text-sm text-gray-500 mt-1">
-                              {edu.from} - {edu.to}
+                              {months[new Date(edu.from).getMonth()]}-
+                              {new Date(edu.from).getFullYear()}
+                              {"    "}
+                              {months[new Date(edu.to).getMonth()]}-
+                              {new Date(edu.to).getFullYear()}
                             </p>
                           </div>
-                          <XIcon
-                            onClick={() => handleRemoveFormation(index)}
-                            className="absolute text-red-500 cursor-pointer top-2 right-2 w-5 h-5"
-                          />
+                          {isEditing && (
+                            <XIcon
+                              onClick={() => handleRemoveFormation(index)}
+                              className="absolute text-red-500 cursor-pointer top-2 right-2 w-5 h-5"
+                            />
+                          )}
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* CV Upload */}
-                  <div className="bg-[#E6F7FB] rounded-2xl shadow-lg p-6 border-2 border-[#B3E6F5]">
-                    <div className="flex items-center gap-2 mb-4">
-                      <FileText className="w-5 h-5 text-[#008CBA]" />
-                      <h3 className="text-xl font-bold text-gray-900">
-                        CV / Curriculum Vitae
-                      </h3>
-                    </div>
+                  <div className="border-2 border-dashed border-[#B3E6F5] rounded-xl p-8 text-center bg-white/50 hover:bg-white/70 transition">
+                    {isEditing ? (
+                      <>
+                        <input
+                          type="file"
+                          id="cv-upload"
+                          className="hidden"
+                          accept=".pdf,.doc,.docx"
+                          onChange={handleCVUpload}
+                        />
 
-                    <div className="border-2 border-dashed border-[#B3E6F5] rounded-xl p-8 text-center bg-white/50  hover:bg-white/70 transition">
-                      <input
-                        type="file"
-                        id="cv-upload"
-                        className="hidden"
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleCVUpload}
-                      />
-                      <label htmlFor="cv-upload" className="cursor-pointer">
-                        <Upload className="w-12 h-12 mx-auto text-[#008CBA] mb-3" />
-                        <p className="text-gray-700 font-semibold mb-1">
-                          {profile.CV
-                            ? "✓ CV chargé avec succès"
-                            : "Cliquez ou glissez-déposez votre CV"}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          PDF, DOC, DOCX (MAX. 5MB)
-                        </p>
-                      </label>
-                    </div>
+                        <label htmlFor="cv-upload" className="cursor-pointer">
+                          <Upload className="w-12 h-12 mx-auto text-[#008CBA] mb-3" />
+                          <p className="text-gray-700 font-semibold mb-1">
+                            {profile.CV
+                              ? "✓ CV chargé avec succès"
+                              : "Cliquez ou glissez-déposez votre CV"}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            PDF, DOC, DOCX (MAX. 5MB)
+                          </p>
+                        </label>
+                      </>
+                    ) : (
+                      <>
+                        {profile.CV ? (
+                          <a
+                            href={profile.CV}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex flex-col items-center gap-2 text-[#008CBA] hover:underline"
+                          >
+                            <Upload className="w-12 h-12" />
+                            <span className="font-semibold">
+                              Voir / Télécharger le CV
+                            </span>
+                          </a>
+                        ) : (
+                          <p className="text-gray-500">Aucun CV disponible</p>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
 
