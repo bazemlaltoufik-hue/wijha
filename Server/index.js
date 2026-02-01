@@ -12,7 +12,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://wijha-z3rf.onrender.com",
     credentials: true,
   }),
 );
