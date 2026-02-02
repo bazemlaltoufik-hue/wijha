@@ -137,7 +137,7 @@ export default function DashHeader({
                 <Building className="w-4 h-4 mr-2" /> Dashboard
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => navigate("/dashboard?tab=company")}
+                onClick={() => navigate("/dashboard?tab=profile")}
                 className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
               >
                 <User2Icon className="w-4 h-4 mr-2" /> Profile
