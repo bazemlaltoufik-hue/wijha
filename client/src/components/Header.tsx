@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { signout } from "@/redux/user/userSlice";
+import { current } from "@reduxjs/toolkit";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -98,7 +99,13 @@ function Header() {
               <DropdownMenuContent className="w-44 p-2 shadow bg-white border-gray-200">
                 <DropdownMenuLabel className="md:hidden mb-2">
                   <div className="text-sm font-medium text-gray-900">
-                    {currentUser.companyName}
+                    {currentUser.role === "jobseeker" ? (
+                      <>
+                        {currentUser.firstName} {currentUser.lastName}
+                      </>
+                    ) : (
+                      <>{currentUser.companyName}</>
+                    )}
                   </div>
                   <div className="text-xs text-gray-500 truncate max-w-[160px]">
                     {currentUser.email}
@@ -111,7 +118,11 @@ function Header() {
                   <Building className="w-4 h-4 mr-2" /> Dashboard
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => navigate("/dashboard?tab=company")}
+                  onClick={() =>
+                    navigate(
+                      `/dashboard?tab=${currentUser.role === "jobseeker" ? "profile" : "company"}`,
+                    )
+                  }
                   className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
                 >
                   <User2Icon className="w-4 h-4 mr-2" /> Profile
@@ -136,13 +147,13 @@ function Header() {
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate("/SignIn")}
-                className="hover:text-white box-border hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
+                className="hover:text-white box-border hidden lg:block hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
               >
                 Login
               </button>
               <button
                 onClick={() => navigate("/registre")}
-                className="px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
+                className="hidden lg:block px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
               >
                 Get Started
               </button>
@@ -187,6 +198,20 @@ function Header() {
             >
               About
             </a>
+            <div className="flex items-center flex-col space-x-4">
+              <button
+                onClick={() => navigate("/SignIn")}
+                className="hover:text-white box-border hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate("/registre")}
+                className="px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
+              >
+                Get Started
+              </button>
+            </div>
           </div>
         </div>
       )}
