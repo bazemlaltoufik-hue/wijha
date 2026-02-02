@@ -198,16 +198,16 @@ function Header() {
             >
               About
             </a>
-            <div className="flex items-center flex-col space-x-4">
+            <div className="flex items-center flex-col gap-4 space-x-4">
               <button
                 onClick={() => navigate("/SignIn")}
-                className="hover:text-white box-border hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
+                className="hover:text-white box-border w-full hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
               >
                 Login
               </button>
               <button
                 onClick={() => navigate("/registre")}
-                className="px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
+                className="px-4 py-2 rounded-xl text-white w-full font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
               >
                 Get Started
               </button>
