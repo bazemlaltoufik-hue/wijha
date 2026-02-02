@@ -11,8 +11,10 @@ import {
   Star,
   TrendingUp,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const DashMain = () => {
+  const { currentUser } = useSelector((state: any) => state.user);
   const stats = [
     {
       label: "Applications",
@@ -32,49 +34,6 @@ const DashMain = () => {
       value: "156",
       icon: TrendingUp,
       color: "bg-orange-500",
-    },
-  ];
-
-  const recentJobs = [
-    {
-      id: 1,
-      title: "Senior Frontend Developer",
-      company: "TechCorp Inc.",
-      location: "San Francisco, CA",
-      type: "Full-time",
-      salary: "$120k - $150k",
-      posted: "2 days ago",
-      logo: "🚀",
-    },
-    {
-      id: 2,
-      title: "UX Designer",
-      company: "DesignHub",
-      location: "Remote",
-      type: "Contract",
-      salary: "$90k - $110k",
-      posted: "3 days ago",
-      logo: "🎨",
-    },
-    {
-      id: 3,
-      title: "Product Manager",
-      company: "StartupXYZ",
-      location: "New York, NY",
-      type: "Full-time",
-      salary: "$130k - $160k",
-      posted: "5 days ago",
-      logo: "💼",
-    },
-    {
-      id: 4,
-      title: "Data Analyst",
-      company: "DataCo",
-      location: "Austin, TX",
-      type: "Full-time",
-      salary: "$85k - $105k",
-      posted: "1 week ago",
-      logo: "📊",
     },
   ];
 
@@ -150,7 +109,7 @@ const DashMain = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, John!
+            Welcome back, {currentUser.firstName}
           </h1>
           <p className="text-gray-600">
             Here's what's happening with your job search today.
