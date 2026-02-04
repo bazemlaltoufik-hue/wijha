@@ -89,10 +89,10 @@ export default function DashHeader({
         {/* Right: Notifications + User */}
         <div className="flex items-center gap-3">
           {/* Notifications */}
-          <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+          {/* <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
             <Bell className="w-6 h-6" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-          </button>
+          </button> */}
 
           {/* User */}
           <DropdownMenu>
@@ -143,7 +143,7 @@ export default function DashHeader({
                 <User2Icon className="w-4 h-4 mr-2" /> Profile
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => navigate("/dashboard?tab=settings")}
+                onClick={() => navigate("/dashboard?tab=setting")}
                 className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
               >
                 <Settings className="w-4 h-4 mr-2" /> Settings

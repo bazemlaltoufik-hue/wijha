@@ -1,4 +1,11 @@
-import { Building, LogOutIcon, Menu, Settings, User2Icon } from "lucide-react";
+import {
+  Building,
+  LogOutIcon,
+  Menu,
+  Settings,
+  User,
+  User2Icon,
+} from "lucide-react";
 import { useState } from "react";
 import img from "../assets/1.png";
 import img1 from "../assets/5.png";
@@ -45,7 +52,10 @@ function Header() {
     <nav className="sticky top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <div className="flex items-center space-x-2">
+          <div
+            className="flex items-center space-x-2"
+            onClick={() => navigate("/")}
+          >
             <img src={img} alt="Logo" className="h-16" />
             <img src={img1} alt="Logo" className="w-20" />
           </div>
@@ -82,13 +92,23 @@ function Header() {
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center gap-3 cursor-pointer">
                   <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
-                    <Building className="w-5 h-5 text-white" />
+                    {currentUser.role === "jobseeker" ? (
+                      <User className="w-5 h-5 text-white" />
+                    ) : (
+                      <Building className="w-5 h-5 text-white" />
+                    )}
                   </div>
 
                   {/* Hidden on mobile */}
                   <div className="hidden md:block">
                     <div className="text-sm font-medium text-gray-900">
-                      {currentUser.companyName}
+                      {currentUser.role === "jobseeker" ? (
+                        <>
+                          {currentUser.firstName} {currentUser.lastName}
+                        </>
+                      ) : (
+                        currentUser.companyNames
+                      )}
                     </div>
                     <div className="text-xs text-gray-500 truncate max-w-[160px]">
                       {currentUser.email}
@@ -128,7 +148,7 @@ function Header() {
                   <User2Icon className="w-4 h-4 mr-2" /> Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => navigate("/dashboard?tab=settings")}
+                  onClick={() => navigate("/dashboard?tab=setting")}
                   className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
                 >
                   <Settings className="w-4 h-4 mr-2" /> Settings

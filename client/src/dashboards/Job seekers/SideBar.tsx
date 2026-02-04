@@ -80,7 +80,10 @@ export default function SideBar({
         {/* Logo */}
         <div className="flex items-center justify-between  h-16 px-6 border-b border-gray-200">
           <div className="flex items-center gap-2">
-            <div className="w-full rounded-lg flex items-center justify-center">
+            <div
+              onClick={() => navigate("/")}
+              className="w-full rounded-lg flex items-center justify-center"
+            >
               <img src={img} alt="Logo" className="h-16" />
               <img src={img1} alt="Logo" className="w-20" />
             </div>

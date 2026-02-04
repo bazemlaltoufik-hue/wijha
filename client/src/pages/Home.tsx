@@ -400,10 +400,10 @@ export default function JobSearchLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Trusted by Industry Leaders
+              Trusted by Leading Companies
             </h2>
             <p className="text-lg text-gray-600">
-              Join professionals working at world-class companies
+              Join professionals working at leading Algerian companies
             </p>
           </div>
           <div className=" grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
