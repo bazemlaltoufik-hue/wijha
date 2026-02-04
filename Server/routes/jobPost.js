@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 import { verifyUser } from "../utils/verifyUser.js";
 
-router.post("/create", createJobPost);
+router.post("/create", verifyUser, createJobPost);
 router.get("/getAllJobs", getAllJobPosts);
 router.post("/getJobPostsByIds", getJobPostsByIds);
 router.get("/:id", getJobPost);
